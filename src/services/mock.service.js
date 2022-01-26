@@ -1,3 +1,4 @@
+
 const questions = [
     {
         category_id: '1',
@@ -39,6 +40,10 @@ const categories = [
         name: 'Литература 20-го века',
         id: '2'
     },
+    {
+        name: 'Восхождение великой культуры Гачи',
+        id: '3'
+    }
 ]
 
 export function getMockQuestions(category_id) {
@@ -47,4 +52,18 @@ export function getMockQuestions(category_id) {
 
 export function getMockCategories() {
     return categories
+}
+
+export const getMockCategoryKeyboard = () => {
+    var buttons = []
+
+    categories.forEach((c) => buttons.push([{ text: c.name, callback_data: c.id }]))
+
+    return {
+        inline_keyboard: buttons
+    }
+}
+
+export const getCategoryById = (categ_id) => {
+    return categories.find((c) => c.id === categ_id)
 }

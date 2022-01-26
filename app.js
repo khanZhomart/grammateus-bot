@@ -1,7 +1,6 @@
 import { Scenes, session, Telegraf } from "telegraf"
 import dotenv from 'dotenv'
 import scenes from "./src/scenes/scenes.js"
-import basicAction from "./src/composers/basic.composer.js"
 
 dotenv.config()
 
@@ -12,6 +11,18 @@ bot.catch((e) => console.log('Something gone wrong...', e))
 bot.use(session())
 bot.use(stage.middleware())
 
-bot.use(basicAction)
+bot.command('start', (ctx) => {
+    if (ctx.message.chat.type !== 'private')
+        return
+
+    return ctx.scene.enter('PRIVATE_MENU_SCENE')
+})
+
+bot.command('menu', (ctx) => {
+    if (ctx.message.chat.type === 'private')
+        return
+
+    return ctx.scene.enter('GROUP_MENU_SCENE')
+})
 
 bot.launch({ dropPendingUpdates: true })

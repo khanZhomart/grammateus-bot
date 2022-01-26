@@ -1,5 +1,5 @@
 import { Scenes } from "telegraf"
-import { privateChatMenuKeyboard } from "../services/keyboard.service.js"
+import { privateMenuKeyboard } from "../services/keyboard.service.js"
 
 class PrivateChatSceneGenerator {
 
@@ -7,20 +7,20 @@ class PrivateChatSceneGenerator {
         const menu = new Scenes.BaseScene('PRIVATE_MENU_SCENE')
 
         menu.enter((ctx) => {
-            return ctx.reply('Выберите действие', {
-                reply_markup: privateChatMenuKeyboard
+            return ctx.reply('menu_', {
+                reply_markup: privateMenuKeyboard
             })
         })
 
-        menu.action('dic', (ctx) => {
-            return ctx.reply(ctx.callbackQuery.data)
-        })
-
-        menu.action('quiz-group', (ctx) => {
-            return 
+        menu.action('dicktant', (ctx) => {
+            return ctx.reply('poop')
         })
 
         return menu
+    }
+
+    static defineDicktant() {
+        
     }
 }
 

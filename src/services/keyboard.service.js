@@ -1,27 +1,20 @@
-import { getMockCategories } from "./mock.service.js"
-
-export const privateChatMenuKeyboard = {
+export const privateMenuKeyboard = {
     inline_keyboard: [
-        [{ text: 'Диктант', callback_data: 'dic' }],
-        [{ text: 'Викторина с группой', callback_data: 'quiz-group' }]
+        [{ text: 'Диктант', callback_data: 'dicktant' }]
     ]
 }
 
-export const categoriesKeyboard = () => {
-    var buttons = []
-
-    getMockCategories().forEach(c => buttons.push([{ text: c.name, callback_data: c.id }]))
-
-    return {
-        inline_keyboard: buttons
-    }
+export const groupMenuKeyboard = {
+    inline_keyboard: [
+        [{ text: 'Викторина', callback_data: 'do-fucking-quiz' }]
+    ]
 }
 
-export const durationsKeyboard = {
+export const quizTimelimitKeyboard = {
     inline_keyboard: [
-        [{ text: '5 секунд', callback_data: 5 }],
         [{ text: '15 секунд', callback_data: 15 }],
         [{ text: '30 секунд', callback_data: 30 }],
         [{ text: '45 секунд', callback_data: 45 }],
+        [{ text: '60 секунд', callback_data: 60 }]
     ]
 }
