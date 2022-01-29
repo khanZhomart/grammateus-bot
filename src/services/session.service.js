@@ -26,6 +26,11 @@ export function incrementQuestionIndex(ctx) {
     return ++ctx.session.data.quiz.current.current_question
 }
 
+export function isQuizEnded(ctx) {
+    return ctx.session.data.quiz.current.current_question === 
+    ctx.session.data.quiz.current.questions.questions.length
+}
+
 export function sendLogs(ctx) {
     return ctx.reply(`<pre>${JSON.stringify(ctx.session.data, null, 2)}</pre>`, {
         parse_mode: 'HTML'

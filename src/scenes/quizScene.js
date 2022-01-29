@@ -2,7 +2,7 @@ import { Scenes } from "telegraf"
 import nav from "../composers/navComposer.js"
 import { groupMenuKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
 import { getMockCategoryKeyboard } from "../services/mock.service.js"
-import { getCurrentQuestion, incrementQuestionIndex, initQuizSession, sendLogs, setQuizCategory, setQuizTimelimit } from "../services/session.service.js"
+import { getCurrentQuestion, incrementQuestionIndex, initQuizSession, isQuizEnded, sendLogs, setQuizCategory, setQuizTimelimit } from "../services/session.service.js"
 
 class QuizSceneGenerator {
 
@@ -33,8 +33,6 @@ class QuizSceneGenerator {
             })
         })
 
-        quiz.use(nav)
-
         quiz.on('callback_query', (ctx) => {
             setQuizCategory(ctx)
 
@@ -53,11 +51,10 @@ class QuizSceneGenerator {
             })
         })
 
-        quiz.use(nav)
-
         quiz.on('callback_query', (ctx) => {
             setQuizTimelimit(ctx)
             ctx.deleteMessage()
+
             return ctx.scene.enter('DO_QUIZ_SCENE')
         })
 
@@ -68,10 +65,15 @@ class QuizSceneGenerator {
         const quiz = new Scenes.BaseScene('DO_QUIZ_SCENE')
 
         quiz.enter(async (ctx) => {
+            if (isQuizEnded(ctx)) {
+                ctx.reply('битти зайбалсындар')
+                return ctx.scene.leave()
+            }
+
             const question = getCurrentQuestion(ctx)
 
-            return ctx.replyWithPoll(
-                question.content.text,
+            ctx.replyWithPoll(
+                `[${1 + ctx.session.data.quiz.current.current_question}/${ctx.session.data.quiz.current.questions.questions.length}]\n\n` + question.content.text,
                 question.content.options,
                 {
                     id: ctx.session.data.quiz.current.current_question,
@@ -82,8 +84,6 @@ class QuizSceneGenerator {
                 }
                 )
         })
-
-        quiz.use(nav)
 
         quiz.command('next', (ctx) => {
             incrementQuestionIndex(ctx)
