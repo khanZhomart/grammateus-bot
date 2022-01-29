@@ -1,4 +1,3 @@
-
 const questions = [
     {
         category_id: 0,
@@ -43,6 +42,42 @@ const questions = [
                 }
             },
         ] 
+    },
+    {
+        category_id: 1,
+        questions: [
+            {
+                question_id: 0,
+                content: {
+                    text: '',
+                    answer: -999,
+                    options: [
+                        '',
+                        '',
+                        '',
+                        ''
+                    ]
+                }
+            },
+        ]
+    },
+    {
+        category_id: 2,
+        questions: [
+            {
+                question_id: 0,
+                content: {
+                    text: '',
+                    answer: -999,
+                    options: [
+                        '',
+                        '',
+                        '',
+                        ''
+                    ]
+                }
+            },
+        ]
     }
 ]
 
@@ -60,27 +95,3 @@ const categories = [
         id: 2
     }
 ]
-
-export function getMockQuestions(category_id) {
-    for (var q of questions)
-        if (q.category_id === Number(category_id)) 
-            return q
-}
-
-export function getMockCategories() {
-    return categories
-}
-
-export const getMockCategoryKeyboard = () => {
-    var buttons = []
-
-    categories.forEach((c) => buttons.push([{ text: c.name, callback_data: c.id }]))
-
-    return {
-        inline_keyboard: buttons
-    }
-}
-
-export const getCategoryById = (categ_id) => {
-    return categories.find((c) => c.id === categ_id)
-}

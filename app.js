@@ -25,4 +25,10 @@ bot.command('menu', (ctx) => {
     return ctx.scene.enter('GROUP_MENU_SCENE')
 })
 
+bot.on('poll_answer', (ctx) => {
+    return console.log(ctx.pollAnswer)
+})
+
 bot.launch({ dropPendingUpdates: true })
+
+export default bot

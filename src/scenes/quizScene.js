@@ -1,7 +1,8 @@
 import { Scenes } from "telegraf"
+import nav from "../composers/navComposer.js"
 import { groupMenuKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
-import { getCategoryById, getMockCategoryKeyboard } from "../services/mock.service.js"
-import { initQuizSession, setQuizCategory, setQuizTimelimit } from "../services/session.service.js"
+import { getMockCategoryKeyboard } from "../services/mock.service.js"
+import { getCurrentQuestion, incrementQuestionIndex, initQuizSession, sendLogs, setQuizCategory, setQuizTimelimit } from "../services/session.service.js"
 
 class QuizSceneGenerator {
 
@@ -32,6 +33,8 @@ class QuizSceneGenerator {
             })
         })
 
+        quiz.use(nav)
+
         quiz.on('callback_query', (ctx) => {
             setQuizCategory(ctx)
 
@@ -50,12 +53,41 @@ class QuizSceneGenerator {
             })
         })
 
+        quiz.use(nav)
+
         quiz.on('callback_query', (ctx) => {
             setQuizTimelimit(ctx)
-            
-            return ctx.editMessageText(`<pre>${JSON.stringify(ctx.session.data, null, 2)}</pre>`, {
-                parse_mode: 'HTML'
-            })
+            ctx.deleteMessage()
+            return ctx.scene.enter('DO_QUIZ_SCENE')
+        })
+
+        return quiz
+    }
+
+    static doQuiz() {
+        const quiz = new Scenes.BaseScene('DO_QUIZ_SCENE')
+
+        quiz.enter(async (ctx) => {
+            const question = getCurrentQuestion(ctx)
+
+            return ctx.replyWithPoll(
+                question.content.text,
+                question.content.options,
+                {
+                    id: ctx.session.data.quiz.current.current_question,
+                    open_period: ctx.session.data.quiz.time_limit,
+                    is_anonymous: false,
+                    type: 'quiz',
+                    correct_option_id: question.content.answer
+                }
+                )
+        })
+
+        quiz.use(nav)
+
+        quiz.command('next', (ctx) => {
+            incrementQuestionIndex(ctx)
+            ctx.scene.reenter()
         })
 
         return quiz
