@@ -83,12 +83,22 @@ class QuizSceneGenerator {
                     correct_option_id: question.content.answer
                 }
                 )
+
+                setTimeout(() => {
+                    incrementQuestionIndex(ctx);
+                    ctx.scene.reenter();
+                }, (ctx.session.data.quiz.time_limit * 1000));
         })
 
         quiz.command('next', (ctx) => {
             incrementQuestionIndex(ctx)
             ctx.scene.reenter()
         })
+
+        // quiz.action('next-question', (ctx) => {
+        //     incrementQuestionIndex(ctx);
+        //     ctx.scene.reenter();
+        // })
 
         return quiz
     }
