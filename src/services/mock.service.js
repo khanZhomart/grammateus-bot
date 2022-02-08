@@ -101,45 +101,11 @@ const questions = [
       {
         question_id: 0,
         content: {
-          text: "Когда гачимучи стал популярным в рунете?",
+          text: "Пусто",
           answer: 1,
           options: ["2010", "2016", "2012", "2003"],
         },
-      },
-      {
-        question_id: 1,
-        content: {
-          text: "Заполните строчку гачи песни: ... неуклюже, Dungeone master по лужам",
-          answer: 2,
-          options: [
-            "♂Fisting ass♂",
-            "♂Fat cock♂",
-            "♂Jabroni♂",
-            "♂FUCKING SLAVES♂",
-          ],
-        },
-      },
-      {
-        question_id: 2,
-        content: {
-          text: "Натуралы ли гачисты?",
-          answer: 2,
-          options: ["♂Gays♂", "Of course no", "GAAACHI", "♂FUCK YOU♂"],
-        },
-      },
-      {
-        question_id: 3,
-        content: {
-          text: "CUM?",
-          answer: 2,
-          options: [
-            "♂SWALLOW CUM♂",
-            "♂THREE HUNDRED BUCKS♂",
-            "*♂SLAP SOUNDS♂*",
-            "♂SO FUCKING DEEP♂",
-          ],
-        },
-      },
+      }
     ],
   },
 ];
@@ -152,12 +118,8 @@ const categories = [
   {
     name: "Литература 20-го века",
     id: 1,
-  },
-  {
-    name: "Восхождение великой культуры Гачи",
-    id: 2,
-  },
-];
+  }
+]
 
 
 export function getMockQuestions(category_id) {

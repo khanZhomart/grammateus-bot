@@ -18,15 +18,11 @@ bot.command('start', (ctx) => {
     return ctx.scene.enter('PRIVATE_MENU_SCENE')
 })
 
-bot.command('menu', (ctx) => {
+bot.command('quiz', (ctx) => {
     if (ctx.message.chat.type === 'private')
         return
 
     return ctx.scene.enter('GROUP_MENU_SCENE')
-})
-
-bot.on('poll_answer', (ctx) => {
-    return console.log(ctx.pollAnswer)
 })
 
 bot.launch({ dropPendingUpdates: true })

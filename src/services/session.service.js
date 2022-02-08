@@ -38,10 +38,25 @@ export function sendLogs(ctx) {
 }
 
 export function getCurrentQuestion(ctx) {
-
     return ctx.session.data
         .quiz
         .current
         .questions
         .questions[ctx.session.data.quiz.current.current_question]
+}
+
+export function buildAndSendQuiz(ctx) {
+    const question = getCurrentQuestion(ctx)
+
+    return ctx.replyWithPoll(
+        `[${1 + ctx.session.data.quiz.current.current_question}/${ctx.session.data.quiz.current.questions.questions.length}]\n\n` + question.content.text,
+        question.content.options,
+        {
+            id: ctx.session.data.quiz.current.current_question,
+            open_period: ctx.session.data.quiz.time_limit,
+            is_anonymous: false,
+            type: 'quiz',
+            correct_option_id: question.content.answer
+        }
+        )
 }
