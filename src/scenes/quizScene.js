@@ -66,7 +66,7 @@ class QuizSceneGenerator {
 
         quiz.enter(async (ctx) => {
             if (isQuizEnded(ctx)) {
-                ctx.reply('битти зайбалсындар')
+                ctx.reply('Квиз окончен!')
                 return ctx.scene.leave()
             }
 
@@ -82,11 +82,6 @@ class QuizSceneGenerator {
             incrementQuestionIndex(ctx)
             ctx.scene.reenter()
         })
-
-        // quiz.action('next-question', (ctx) => {
-        //     incrementQuestionIndex(ctx);
-        //     ctx.scene.reenter();
-        // })
 
         return quiz
     }
