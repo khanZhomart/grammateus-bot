@@ -72,13 +72,21 @@ class QuizSceneGenerator {
 
             const res = await buildAndSendQuiz(ctx)
 
-            console.log(res)
+            setTimeout(() => {
+                incrementQuestionIndex(ctx);
+                ctx.scene.reenter();
+            }, (ctx.session.data.quiz.time_limit * 1000));
         })
 
         quiz.command('next', (ctx) => {
             incrementQuestionIndex(ctx)
             ctx.scene.reenter()
         })
+
+        // quiz.action('next-question', (ctx) => {
+        //     incrementQuestionIndex(ctx);
+        //     ctx.scene.reenter();
+        // })
 
         return quiz
     }
