@@ -1,9 +1,16 @@
-import { getMockQuestions } from "./mock.service.js"
+import { getMockCategoryTitleById, getMockQuestions, getMockSubCategoryTitleById } from "./mock.service.js"
 
 export function initQuizSession(ctx) {
     return ctx.session.data = {
         quiz: {
-            categ_id: -1,
+            category: {
+                id: -1,
+                title: ''
+            },
+            subcategory: {
+                id: -1,
+                title: ''
+            },
             time_limit: -1,
             current: {
                 questions: [],
@@ -14,8 +21,17 @@ export function initQuizSession(ctx) {
 }
 
 export function setQuizCategory(ctx) {
-    ctx.session.data.quiz.current.questions = getMockQuestions(ctx.callbackQuery.data)
-    return ctx.session.data.quiz.categ_id = ctx.callbackQuery.data
+    ctx.session.data.quiz.category.title = getMockCategoryTitleById(ctx.callbackQuery.data)
+    return ctx.session.data.quiz.category.id = ctx.callbackQuery.data
+}
+
+export function setQuizSubCategory(ctx) {
+    console.log(ctx.session.data.quiz.category.id)
+    console.log(ctx.callbackQuery.data)
+
+    ctx.session.data.quiz.current.questions = getMockQuestions(ctx.session.data.quiz.category.id, ctx.callbackQuery.data)
+    ctx.session.data.quiz.subcategory.title = getMockSubCategoryTitleById(ctx.callbackQuery.data)
+    return ctx.session.data.quiz.subcategory.id = ctx.callbackQuery.data
 }
 
 export function setQuizTimelimit(ctx) {
@@ -27,8 +43,10 @@ export function incrementQuestionIndex(ctx) {
 }
 
 export function isQuizEnded(ctx) {
+    console.log(ctx.session.data.quiz.current.questions)
+
     return ctx.session.data.quiz.current.current_question === 
-    ctx.session.data.quiz.current.questions.questions.length
+    ctx.session.data.quiz.current.questions.length
 }
 
 export function sendLogs(ctx) {
@@ -41,7 +59,6 @@ export function getCurrentQuestion(ctx) {
     return ctx.session.data
         .quiz
         .current
-        .questions
         .questions[ctx.session.data.quiz.current.current_question]
 }
 
@@ -49,7 +66,7 @@ export function buildAndSendQuiz(ctx) {
     const question = getCurrentQuestion(ctx)
 
     return ctx.replyWithPoll(
-        `[${1 + ctx.session.data.quiz.current.current_question}/${ctx.session.data.quiz.current.questions.questions.length}]\n\n` + question.content.text,
+        `[${1 + ctx.session.data.quiz.current.current_question}/${ctx.session.data.quiz.current.questions.length}]\n\n` + question.content.text,
         question.content.options,
         {
             id: ctx.session.data.quiz.current.current_question,

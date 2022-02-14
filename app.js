@@ -1,6 +1,7 @@
 import { Scenes, session, Telegraf } from "telegraf"
 import dotenv from 'dotenv'
 import scenes from "./src/scenes/scenes.js"
+import { sendLogs } from "./src/services/session.service.js"
 
 dotenv.config()
 
@@ -24,6 +25,8 @@ bot.command('quiz', (ctx) => {
 
     return ctx.scene.enter('GROUP_MENU_SCENE')
 })
+
+bot.command('cmd', (ctx) => sendLogs(ctx))
 
 bot.launch({ dropPendingUpdates: true })
 
