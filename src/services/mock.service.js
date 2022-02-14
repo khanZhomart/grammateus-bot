@@ -152,6 +152,8 @@ export const getMockSubCategoryKeyboard = (category_id) => {
         q.sub_categories.forEach((s) => buttons.push([{ text: s.title, callback_data: s.subcategory_id }]))
     })
 
+    buttons.push([{ text: 'Назад ⬅️', callback_data: 'back' }])
+
     return {
       inline_keyboard: buttons
     }
