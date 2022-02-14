@@ -63,6 +63,7 @@ class QuizSceneGenerator {
 
     static doQuiz() {
         const quiz = new Scenes.BaseScene('DO_QUIZ_SCENE')
+        const members = []
 
         quiz.enter(async (ctx) => {
             if (isQuizEnded(ctx)) {
