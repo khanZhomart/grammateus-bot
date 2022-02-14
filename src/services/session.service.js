@@ -22,6 +22,19 @@ export function initQuizSession(ctx) {
                 interval_id: -1,
                 timeout_id: -1
             }
+        },
+        quiz_data: {
+            current_question: {
+                poll_id: -1,
+                correct_option_id: -1
+            },
+            users: [
+                {
+                    user_id: -1,
+                    username: '',
+                    score: 0
+                }
+            ]
         }
     }
 }

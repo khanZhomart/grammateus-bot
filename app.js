@@ -1,15 +1,7 @@
 import { Scenes, session, Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import scenes from "./src/scenes/scenes.js";
-import {
-  isQuizEnded,
-  getCurrentQuestion,
-} from "./src/services/session.service.js";
-import { Scenes, session, Telegraf } from "telegraf"
-import dotenv from 'dotenv'
-import scenes from "./src/scenes/scenes.js"
-import { sendLogs } from "./src/services/session.service.js"
-import { pushChat, getChat, resetDb, getAllChats } from "./src/database/db.js"
+import { pushChat, getChat, resetDb, getAllChats, setCurrentQuestion } from "./src/database/db.js"
 
 dotenv.config();
 
@@ -22,7 +14,8 @@ bot.use(session());
 bot.use(stage.middleware());
 
 bot.command("start", (ctx) => {
-  if (ctx.message.chat.type !== "private") return;
+  if (ctx.message.chat.type !== "private") 
+    return;
 
   return ctx.scene.enter("PRIVATE_MENU_SCENE");
 });
@@ -35,9 +28,14 @@ bot.command("menu", (ctx) => {
   return ctx.scene.enter("GROUP_MENU_SCENE");
 });
 
-bot.command('quiz', (ctx) => {
-  if (ctx.message.chat.type === 'private')
-    return
+bot.command('quiz', async (ctx) => {
+    const admins = await ctx.telegram.getChatAdministrators(ctx.message.chat.id)
+
+    if (admins.find((a) => a.user.id === ctx.message.from.id) === undefined)
+        return
+
+    if (ctx.message.chat.type === 'private')
+        return
 
     pushChat(ctx.message.chat.id, (quiz_started) => {
         if (quiz_started) {
@@ -65,30 +63,36 @@ bot.command('cmdg', (ctx) => {
         })
     })
 })
-
-bot.on('poll', (ctx) => console.log(ctx.poll))
+/*
+bot.on('poll', (ctx) => {
+    console.log('bruhfhewf', ctx)
+    setCurrentQuestion(ctx.chat.id, ctx.poll.id, ctx.poll.correct_option_id)
+})
 
 bot.on("poll_answer", (ctx) => {
-  const search = (obj) => obj.name === ctx.pollAnswer.user.first_name;
-  //const question = getCurrentQuestion(ctx);
+    console.log(ctx.pollAnswer)    
 
-  console.log(ctx.pollAnswer.option_ids);
-  //console.log(question.content.answer);
+//   const search = (obj) => obj.name === ctx.pollAnswer.user.first_name;
+//   //const question = getCurrentQuestion(ctx);
 
-  if (members.find(search) !== undefined) {
-    members.find(search).score += 1;
-  }
+//   console.log(ctx.pollAnswer.option_ids);
+//   //console.log(question.content.answer);
 
-  if (members.find(search) == undefined) {
-    members.push({
-      name: ctx.pollAnswer.user.first_name,
-      score: 0,
-    });
-  }
+//   if (members.find(search) !== undefined) {
+//     members.find(search).score += 1;
+//   }
 
-  return console.log(members, members.length);
-  //return console.log(ctx.pollAnswer)
+//   if (members.find(search) == undefined) {
+//     members.push({
+//       name: ctx.pollAnswer.user.first_name,
+//       score: 0,
+//     });
+//   }
+
+//   return console.log(members, members.length);
 });
+
+*/
 
 bot.launch({ dropPendingUpdates: true });
 

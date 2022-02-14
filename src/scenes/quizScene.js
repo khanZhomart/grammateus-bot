@@ -118,6 +118,12 @@ class QuizSceneGenerator {
             return ctx.scene.reenter()
         })
 
+        quiz.command('now', (ctx) => {
+            clearInterval(ctx.session.data.quiz.timer.interval_id)
+            clearTimeout(ctx.session.data.quiz.timer.timeout_id)
+            ctx.scene.enter('DO_QUIZ_SCENE')
+        })
+
         quiz.action('ready', async (ctx) => {
             ctx.session.data.quiz.timer.interval_id = setInterval(() => {
                 console.log('###')
@@ -157,7 +163,7 @@ class QuizSceneGenerator {
         quiz.enter(async (ctx) => {
             if (isQuizEnded(ctx)) {
                 ctx.reply('Квиз окончен!')
-                removeChat(ctx.message.chat.id)
+                removeChat(ctx.chat.id)
                 console.log('db cleared')
                 return ctx.scene.leave()
             }

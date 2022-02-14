@@ -15,13 +15,43 @@ export function pushChat(chat_id, callback) {
         if (docs.length === 0) {
             db.insert({
                 chat_id,
-                quiz_started: true
+                quiz_started: true,
+                data: {
+                    current_question: {
+                        poll_id: -1,
+                        correct_option_id: -1
+                    }
+                },
+                users: []
             })
             return callback(false)
         }
 
         callback(docs[0].quiz_started)
     })
+}
+
+export function setCurrentQuestion(chat_id, poll_id, correct_option_id) {
+    console.log('bruh')
+
+    db.update(
+        { chat_id },
+        {
+            data: {
+                current_question: {
+                    poll_id,
+                    correct_option_id
+                }
+            }
+        },
+        {},
+        (err, docs) => {
+            if (err)
+                console.log(err)
+
+            console.log(docs)
+        }
+    )
 }
 
 export function removeChat(chat_id) {
