@@ -1,4 +1,4 @@
-# Грамматеус
+# Грамматеус `@grammateus_bot`
 
 <p align="center">
   <img src="https://github.com/khanZhomart/grammateus-bot/blob/main/public/resources/1.png" width=70% height=70%>
