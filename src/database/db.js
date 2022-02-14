@@ -6,9 +6,7 @@ db.loadDatabase()
 
 export function resetDb() {
     return db.remove({ }, { multi: true }, function (err, numRemoved) {
-        db.loadDatabase(function (err) {
-          // done
-        });
+        db.loadDatabase(function (err) { });
       });
 }
 
