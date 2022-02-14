@@ -6,6 +6,8 @@ export default [
 
     QuizSceneGenerator.mainMenuScene(),
     QuizSceneGenerator.defineQuizCategory(),
+    QuizSceneGenerator.defineQuizSubCategory(),
     QuizSceneGenerator.defineTimelimit(),
+    QuizSceneGenerator.confirmQuiz(),
     QuizSceneGenerator.doQuiz()
 ]
