@@ -15,7 +15,8 @@ export function initQuizSession(ctx) {
             current: {
                 questions: [],
                 current_question: 0
-            }
+            },
+            timer_id: -1
         }
     }
 }
@@ -40,6 +41,14 @@ export function setQuizTimelimit(ctx) {
 
 export function incrementQuestionIndex(ctx) {
     return ++ctx.session.data.quiz.current.current_question
+}
+
+export function setAutoTransition(id) {
+    return ctx.session.data.quiz.timer_id = id 
+}
+
+export function stopAutoTransition(ctx) {
+    return clearTimeout(ctx.session.data.quiz.timer_id)
 }
 
 export function isQuizEnded(ctx) {

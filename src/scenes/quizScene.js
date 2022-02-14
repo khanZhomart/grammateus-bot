@@ -2,7 +2,7 @@ import { Scenes } from "telegraf"
 import nav from "../composers/navComposer.js"
 import { groupMenuKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
 import { getMockCategoryKeyboard, getMockSubCategoryKeyboard } from "../services/mock.service.js"
-import { buildAndSendQuiz, incrementQuestionIndex, initQuizSession, isQuizEnded, setQuizCategory, setQuizSubCategory, setQuizTimelimit } from "../services/session.service.js"
+import { buildAndSendQuiz, incrementQuestionIndex, initQuizSession, isQuizEnded, setAutoTransition, setQuizCategory, setQuizSubCategory, setQuizTimelimit, stopAutoTransition } from "../services/session.service.js"
 
 class QuizSceneGenerator {
 
@@ -35,7 +35,6 @@ class QuizSceneGenerator {
 
         quiz.on('callback_query', (ctx) => {
             setQuizCategory(ctx)
-
             return ctx.scene.enter('DEFINE_QUIZ_SUBCATEGORY_SCENE')
         })
 
@@ -46,7 +45,8 @@ class QuizSceneGenerator {
         const quiz = new Scenes.BaseScene('DEFINE_QUIZ_SUBCATEGORY_SCENE')
 
         quiz.enter((ctx) => {
-            return ctx.editMessageText(`*${ctx.session.data.quiz.category.title} /*\n\nУкажите подкатегорию`,
+            return ctx.editMessageText(
+                `*${ctx.session.data.quiz.category.title} /*\n\nУкажите подкатегорию`,
                 {
                     reply_markup: getMockSubCategoryKeyboard(ctx.session.data.quiz.category.id),
                     parse_mode: 'Markdown'
@@ -56,7 +56,6 @@ class QuizSceneGenerator {
 
         quiz.on('callback_query', (ctx) => {
             setQuizSubCategory(ctx)
-
             return ctx.scene.enter('DEFINE_QUIZ_TIMELIMIT_SCENE')
         })
 
@@ -67,17 +66,18 @@ class QuizSceneGenerator {
         const quiz = new Scenes.BaseScene('DEFINE_QUIZ_TIMELIMIT_SCENE')
 
         quiz.enter((ctx) => {
-            console.log(ctx.session.data.quiz.subcategory.title)
-            return ctx.editMessageText(`*${ctx.session.data.quiz.category.title} /\n${ctx.session.data.quiz.subcategory.title} /*\n\nВыберите время, которое будет выдаватся для ответа на вопрос`, {
-                reply_markup: quizTimelimitKeyboard,
-                parse_mode: 'Markdown'
-            })
+            return ctx.editMessageText(
+                `*${ctx.session.data.quiz.category.title} /\n${ctx.session.data.quiz.subcategory.title} /*\n\nВыберите время, которое будет выдаватся для ответа на вопрос`, 
+                {
+                    reply_markup: quizTimelimitKeyboard,
+                    parse_mode: 'Markdown'
+                }
+            )
         })
 
         quiz.on('callback_query', (ctx) => {
             setQuizTimelimit(ctx)
             ctx.deleteMessage()
-
             return ctx.scene.enter('DO_QUIZ_SCENE')
         })
 
@@ -95,14 +95,17 @@ class QuizSceneGenerator {
 
             const res = await buildAndSendQuiz(ctx)
 
-            setTimeout(() => {
+            const timer_id = setTimeout(() => {
                 incrementQuestionIndex(ctx);
                 ctx.scene.reenter();
             }, (ctx.session.data.quiz.time_limit * 1000));
+
+            return setAutoTransition(timer_id)
         })
 
         quiz.command('next', (ctx) => {
             incrementQuestionIndex(ctx)
+            stopAutoTransition(ctx)
             ctx.scene.reenter()
         })
 

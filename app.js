@@ -28,6 +28,8 @@ bot.command('quiz', (ctx) => {
 
 bot.command('cmd', (ctx) => sendLogs(ctx))
 
+bot.on('poll', (ctx) => console.log(ctx.poll))
+
 bot.launch({ dropPendingUpdates: true })
 
 export default bot
