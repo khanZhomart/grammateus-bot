@@ -139,6 +139,8 @@ export const getMockCategoryKeyboard = () => {
 
     questions.forEach((q) => buttons.push([ { text: q.title, callback_data: q.category_id } ]))
 
+    buttons.push([{ text: 'Отменить ❌', callback_data: 'back' }])
+
     return {
         inline_keyboard: buttons
     }

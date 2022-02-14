@@ -1,5 +1,6 @@
 import { Scenes } from "telegraf"
 import nav from "../composers/navComposer.js"
+import { removeChat } from "../database/db.js"
 import { groupMenuKeyboard, quizConfirmationKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
 import { getMockCategoryKeyboard, getMockSubCategoryKeyboard } from "../services/mock.service.js"
 import { buildAndSendQuiz, incrementQuestionIndex, initQuizSession, isQuizEnded, setAutoTransition, setQuizCategory, setQuizSubCategory, setQuizTimelimit, stopAutoTransition } from "../services/session.service.js"
@@ -12,7 +13,7 @@ class QuizSceneGenerator {
         menu.enter((ctx) => {
             initQuizSession(ctx)
 
-            return ctx.reply('menu_group', {
+            return ctx.reply('Выберите действие', {
                 reply_markup: groupMenuKeyboard
             })
         })
@@ -33,7 +34,9 @@ class QuizSceneGenerator {
             })
         })
 
-        quiz.action('back', (ctx) => {
+        quiz.action('back', async (ctx) => {
+            ctx.deleteMessage()
+            removeChat(ctx.chat.id)
             return ctx.scene.enter('GROUP_MENU_SCENE')
         })
 
@@ -131,13 +134,13 @@ class QuizSceneGenerator {
                     )
                     --ctx.session.data.quiz.timer.timer_start
                 }
-            }, 1500)
+            }, 1900)
 
             ctx.session.data.quiz.timer.timeout_id = setTimeout(() => {
                 clearInterval(ctx.session.data.quiz.timer.interval_id)
                 ctx.deleteMessage()
                 ctx.scene.enter('DO_QUIZ_SCENE')
-            }, 16_000)
+            }, 21000)
         })
 
         quiz.action('back', (ctx) => {
@@ -153,6 +156,8 @@ class QuizSceneGenerator {
         quiz.enter(async (ctx) => {
             if (isQuizEnded(ctx)) {
                 ctx.reply('Квиз окончен!')
+                removeChat(ctx.message.chat.id)
+                console.log('db cleared')
                 return ctx.scene.leave()
             }
 
@@ -164,6 +169,12 @@ class QuizSceneGenerator {
             }, (ctx.session.data.quiz.time_limit * 1000));
 
             return setAutoTransition(ctx, timer_id)
+        })
+
+        quiz.command('quit', (ctx) => {
+            ctx.reply('Викторина приостановлена. ❌')
+            removeChat(ctx.message.from)
+            return ctx.scene.leave()
         })
 
         quiz.command('next', (ctx) => {

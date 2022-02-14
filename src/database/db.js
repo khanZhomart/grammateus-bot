@@ -24,6 +24,10 @@ export function pushChat(chat_id, callback) {
     })
 }
 
+export function removeChat(chat_id) {
+    db.remove({ chat_id }, {})
+}
+
 function chatAlreadyExists(chat_id, callback) {
     db.find({ chat_id }, (err, docs) => {
         if (err)
@@ -35,6 +39,15 @@ function chatAlreadyExists(chat_id, callback) {
 
 export function checkIfQuizStarted(chat_id, callback) {
     db.find({ chat_id }, (err, docs) => {
+        if (err)
+            console.log(err)
+
+        callback(docs)
+    })
+}
+
+export function getAllChats(callback) {
+    db.find({}, (err, docs) => {
         if (err)
             console.log(err)
 

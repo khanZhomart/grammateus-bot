@@ -2,7 +2,7 @@ import { Scenes, session, Telegraf } from "telegraf"
 import dotenv from 'dotenv'
 import scenes from "./src/scenes/scenes.js"
 import { sendLogs } from "./src/services/session.service.js"
-import { pushChat, getChat, resetDb } from "./src/database/db.js"
+import { pushChat, getChat, resetDb, getAllChats } from "./src/database/db.js"
 
 dotenv.config()
 
@@ -37,6 +37,14 @@ bot.command('/fuck_db', (ctx) => resetDb())
 
 bot.command('cmd', (ctx) => {
     getChat(ctx.message.chat.id, (data) => {
+        return ctx.reply(`<pre>${JSON.stringify(data, null, 2)}</pre>`, {
+            parse_mode: 'HTML'
+        })
+    })
+})
+
+bot.command('cmdg', (ctx) => {
+    getAllChats((data) => {
         return ctx.reply(`<pre>${JSON.stringify(data, null, 2)}</pre>`, {
             parse_mode: 'HTML'
         })

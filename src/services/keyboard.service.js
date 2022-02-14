@@ -22,7 +22,7 @@ export const quizTimelimitKeyboard = {
 
 export const quizConfirmationKeyboard = {
     inline_keyboard: [
-        [{ text: 'Подтверждаю ✅', callback_data: 'ready' }],
+        [{ text: 'Начинаем ✅', callback_data: 'ready' }],
         [{ text: 'Назад ⬅️', callback_data: 'back' }]
     ]
 }
