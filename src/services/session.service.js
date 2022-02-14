@@ -16,7 +16,12 @@ export function initQuizSession(ctx) {
                 questions: [],
                 current_question: 0
             },
-            timer_id: -1
+            timer: {
+                timer_start: 10,
+                timer_id: -1,
+                interval_id: -1,
+                timeout_id: -1
+            }
         }
     }
 }
@@ -27,9 +32,6 @@ export function setQuizCategory(ctx) {
 }
 
 export function setQuizSubCategory(ctx) {
-    console.log(ctx.session.data.quiz.category.id)
-    console.log(ctx.callbackQuery.data)
-
     ctx.session.data.quiz.current.questions = getMockQuestions(ctx.session.data.quiz.category.id, ctx.callbackQuery.data)
     ctx.session.data.quiz.subcategory.title = getMockSubCategoryTitleById(ctx.callbackQuery.data)
     return ctx.session.data.quiz.subcategory.id = ctx.callbackQuery.data
@@ -43,17 +45,15 @@ export function incrementQuestionIndex(ctx) {
     return ++ctx.session.data.quiz.current.current_question
 }
 
-export function setAutoTransition(id) {
-    return ctx.session.data.quiz.timer_id = id 
+export function setAutoTransition(ctx, id) {
+    return ctx.session.data.quiz.timer.timer_id = id 
 }
 
 export function stopAutoTransition(ctx) {
-    return clearTimeout(ctx.session.data.quiz.timer_id)
+    return clearTimeout(ctx.session.data.quiz.timer.timer_id)
 }
 
 export function isQuizEnded(ctx) {
-    console.log(ctx.session.data.quiz.current.questions)
-
     return ctx.session.data.quiz.current.current_question === 
     ctx.session.data.quiz.current.questions.length
 }

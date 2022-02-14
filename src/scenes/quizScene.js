@@ -1,6 +1,6 @@
 import { Scenes } from "telegraf"
 import nav from "../composers/navComposer.js"
-import { groupMenuKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
+import { groupMenuKeyboard, quizConfirmationKeyboard, quizTimelimitKeyboard } from "../services/keyboard.service.js"
 import { getMockCategoryKeyboard, getMockSubCategoryKeyboard } from "../services/mock.service.js"
 import { buildAndSendQuiz, incrementQuestionIndex, initQuizSession, isQuizEnded, setAutoTransition, setQuizCategory, setQuizSubCategory, setQuizTimelimit, stopAutoTransition } from "../services/session.service.js"
 
@@ -33,6 +33,10 @@ class QuizSceneGenerator {
             })
         })
 
+        quiz.action('back', (ctx) => {
+            return ctx.scene.enter('GROUP_MENU_SCENE')
+        })
+
         quiz.on('callback_query', (ctx) => {
             setQuizCategory(ctx)
             return ctx.scene.enter('DEFINE_QUIZ_SUBCATEGORY_SCENE')
@@ -52,6 +56,10 @@ class QuizSceneGenerator {
                     parse_mode: 'Markdown'
                 }
             )
+        })
+        
+        quiz.action('back', (ctx) => {
+            return ctx.scene.enter('DEFINE_QUIZ_CATEGORY_SCENE')
         })
 
         quiz.on('callback_query', (ctx) => {
@@ -75,10 +83,65 @@ class QuizSceneGenerator {
             )
         })
 
+        quiz.action('back', (ctx) => {
+            return ctx.scene.enter('DEFINE_QUIZ_SUBCATEGORY_SCENE')
+        })
+
         quiz.on('callback_query', (ctx) => {
             setQuizTimelimit(ctx)
-            ctx.deleteMessage()
-            return ctx.scene.enter('DO_QUIZ_SCENE')
+            return ctx.scene.enter('CONFIRMATION_QUIZ_SCENE')
+        })
+
+        return quiz
+    }
+
+    static confirmQuiz() {
+        const quiz = new Scenes.BaseScene('CONFIRMATION_QUIZ_SCENE')
+
+        quiz.enter((ctx) => {
+            return ctx.editMessageText(
+                `*${ctx.session.data.quiz.category.title}* /\n*${ctx.session.data.quiz.subcategory.title}* /\n${ctx.session.data.quiz.time_limit} секунд на ответ\n\nНачинаем?`,
+                {
+                    reply_markup: quizConfirmationKeyboard,
+                    parse_mode: 'Markdown'
+                }
+            )
+        })
+
+        quiz.action('cancel', (ctx) => {
+            clearInterval(ctx.session.data.quiz.timer.interval_id)
+            clearTimeout(ctx.session.data.quiz.timer.timeout_id)
+            ctx.session.data.quiz.timer.timer_start = 10
+            return ctx.scene.reenter()
+        })
+
+        quiz.action('ready', async (ctx) => {
+            ctx.session.data.quiz.timer.interval_id = setInterval(() => {
+                console.log('###')
+                if (ctx.session.data.quiz.timer.timer_start !== 0) {
+                    ctx.editMessageText(`Принято, начнём через: *${ctx.session.data.quiz.timer.timer_start}* ⏱️`,
+                        {   
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [{ text: 'Отменить ❌', callback_data: 'cancel' }]
+                                ]
+                            },
+                            parse_mode: 'Markdown'
+                        }
+                    )
+                    --ctx.session.data.quiz.timer.timer_start
+                }
+            }, 1500)
+
+            ctx.session.data.quiz.timer.timeout_id = setTimeout(() => {
+                clearInterval(ctx.session.data.quiz.timer.interval_id)
+                ctx.deleteMessage()
+                ctx.scene.enter('DO_QUIZ_SCENE')
+            }, 16_000)
+        })
+
+        quiz.action('back', (ctx) => {
+            return ctx.scene.enter('DEFINE_QUIZ_TIMELIMIT_SCENE')
         })
 
         return quiz
@@ -100,7 +163,7 @@ class QuizSceneGenerator {
                 ctx.scene.reenter();
             }, (ctx.session.data.quiz.time_limit * 1000));
 
-            return setAutoTransition(timer_id)
+            return setAutoTransition(ctx, timer_id)
         })
 
         quiz.command('next', (ctx) => {
