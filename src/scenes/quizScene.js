@@ -125,6 +125,9 @@ class QuizSceneGenerator {
         })
 
         quiz.action('ready', async (ctx) => {
+            if (ctx.session.data.quiz.timer.interval_id !== -1)
+                return console.log('poop')
+
             ctx.session.data.quiz.timer.interval_id = setInterval(() => {
                 console.log('###')
                 if (ctx.session.data.quiz.timer.timer_start !== 0) {
