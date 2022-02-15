@@ -43,7 +43,7 @@ bot.command('quiz', async (ctx) => {
     })
 })
 
-bot.command('/fuck_db', (ctx) => resetDb())
+bot.command('/cleardb', (ctx) => resetDb())
 
 bot.command('cmd', (ctx) => {
     getChat(ctx.message.chat.id, (data) => {
