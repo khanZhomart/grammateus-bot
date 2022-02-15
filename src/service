@@ -54,8 +54,21 @@ const questions = [
                         "Когда включили свет  комната показалась большой и нарядной."],
             },
           },
+
           {
             question_id: 4,
+            content: {
+              text: "Найдите БСП, между частями которого нужно поставить точку с запятой.",
+              answer: 3,
+              options: ["Туман казался неподвижным и сонным  трава и кусты стали мокрыми.",
+                        "Вынули рамы и весна ворвалась в комнату с новой силой.",
+                        "В тихом саду замолчал соловей  падают капли во мраке с ветвей.",
+                        "Берёза долго радующая глаз обывателя пожелтела на неё сурово нападая  и держа в осаде то и дело налетают ветры сентября."],
+            },
+          },
+
+          {
+            question_id: 5,
             content: {
               text: "Найдите, в каком примере тире стоит между частями БСП.",
               answer: 2,
@@ -67,7 +80,7 @@ const questions = [
           },
 
           {
-            question_id: 5,
+            question_id: 6,
             content: {
               text: "Найдите, в каком примере двоеточие стоит между частями БСП.",
               answer: 1,
@@ -79,7 +92,7 @@ const questions = [
           },
 
           {
-            question_id: 6,
+            question_id: 7,
             content: {
               text: "Найдите, в каком примере запятая стоит между частями БСП.",
               answer: 3,
@@ -91,7 +104,7 @@ const questions = [
           },
 
           {
-            question_id: 7,
+            question_id: 8,
             content: {
               text: "Найдите предложение, в котором нет пунктуационных ошибок.",
               answer: 1,
@@ -103,7 +116,7 @@ const questions = [
           },
 
           {
-            question_id: 8,
+            question_id: 9,
             content: {
               text: "Найдите предложение с пунктуационной ошибкой.",
               answer: 1,
@@ -294,20 +307,22 @@ const questions = [
   },
 ];
 
+const categories = [
+  {
+    name: "Основы грамматики",
+    id: 0,
+  },
+  {
+    name: "Литература 20-го века",
+    id: 1,
+  }
+]
 
-export function getMockQuestions(category_id, subcategory_id) {
-    var res = []
 
-    for (var q of questions) {
-      if (q.category_id === Number(category_id)) {
-        for (var s of q.sub_categories) {
-          if (s.subcategory_id === Number(subcategory_id))
-            res = s.questions
-        }
-      }
-    }
-
-    return res
+export function getMockQuestions(category_id) {
+    for (var q of questions)
+        if (q.category_id === Number(category_id))
+            return q
 }
 
 export function getMockCategories() {
@@ -317,38 +332,11 @@ export function getMockCategories() {
 export const getMockCategoryKeyboard = () => {
     var buttons = []
 
-    questions.forEach((q) => buttons.push([ { text: q.title, callback_data: q.category_id } ]))
-
-    buttons.push([{ text: 'Отменить ❌', callback_data: 'back' }])
+    categories.forEach((c) => buttons.push([{ text: c.name, callback_data: c.id }]))
 
     return {
         inline_keyboard: buttons
     }
-}
-
-export const getMockSubCategoryKeyboard = (category_id) => {
-    var buttons = []
-
-    questions.forEach((q) => {
-      if (q.category_id === Number(category_id))
-        q.sub_categories.forEach((s) => buttons.push([{ text: s.title, callback_data: s.subcategory_id }]))
-    })
-
-    buttons.push([{ text: 'Назад ⬅️', callback_data: 'back' }])
-
-    return {
-      inline_keyboard: buttons
-    }
-}
-
-export const getMockCategoryTitleById = (id) => {
-    return questions.filter((q) => q.category_id === Number(id))[0].title
-}
-
-export const getMockSubCategoryTitleById = (id) => {
-  return questions.filter((q) => {
-    return q.sub_categories.filter((s) => s.subcategory_id === Number(id))
-  })[0].sub_categories[0].title
 }
 
 export const getCategoryById = (categ_id) => {

@@ -29,10 +29,7 @@ bot.command("menu", (ctx) => {
 });
 
 bot.command('quiz', async (ctx) => {
-    const admins = await ctx.telegram.getChatAdministrators(ctx.message.chat.id)
-
-    if (admins.find((a) => a.user.id === ctx.message.from.id) === undefined)
-        return
+    
 
     if (ctx.message.chat.type === 'private')
         return
